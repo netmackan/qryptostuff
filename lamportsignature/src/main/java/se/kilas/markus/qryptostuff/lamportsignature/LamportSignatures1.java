@@ -58,7 +58,7 @@ public class LamportSignatures1 {
             //MessageDigest md = MessageDigest.getInstance(DIGEST_ALG);
             //byte[] digest = md.digest(message);
             //System.out.println("Hashed message: " + new BigInteger(digest));
-            //signed = priv.sign(new BigInteger(digest));
+            //signed = priv.signHash(new BigInteger(digest));
             signed = priv.sign(message);
             System.out.println("Signature: " + Arrays.deepToString(signed));
             System.out.println("Signing took " + (System.currentTimeMillis() - start) + " ms");
@@ -91,7 +91,7 @@ public class LamportSignatures1 {
             System.out.println();
         }
         
-        // Trying to sign twice with the same key
+        // Trying to signHash twice with the same key
         try {
             start = System.currentTimeMillis();
             //MessageDigest md = MessageDigest.getInstance(DIGEST_ALG);
@@ -107,5 +107,5 @@ public class LamportSignatures1 {
         }
         
     }
-    
+
 }

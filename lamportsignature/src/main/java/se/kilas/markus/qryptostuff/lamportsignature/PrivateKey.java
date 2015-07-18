@@ -16,7 +16,6 @@
  */
 package se.kilas.markus.qryptostuff.lamportsignature;
 
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 
@@ -28,16 +27,17 @@ public class PrivateKey extends Key {
     
     public static PrivateKey generate(MessageDigest md, SecureRandom random) {
         final int length = md.getDigestLength();
-        final BigInteger[][] y = new BigInteger[length * 8][2];
-        for (BigInteger[] y1 : y) {
+        final byte[][][] y = new byte[length * 8][2][];
+        for (byte[][] y1 : y) {
             for (int j = 0; j < y1.length; j++) {
-                y1[j] = new BigInteger(length, random);
+                y1[j] = new byte[length];
+                random.nextBytes(y1[j]);
             }
         }
         return new PrivateKey(md, y);
     }
     
-    public PrivateKey(MessageDigest md, BigInteger[][] v) {
+    public PrivateKey(MessageDigest md, byte[][][] v) {
         super(false, md, v);
     }
 
@@ -45,7 +45,7 @@ public class PrivateKey extends Key {
         if (v == null) {
             throw new IllegalStateException("Key not available");
         }
-        final BigInteger[][] z  = new BigInteger[v.length][2];
+        final byte[][][] z  = new byte[v.length][2][];
         for (int i = 0; i < v.length; i++) {
             for (int j = 0; j < 2; j++) {
                 z[i][j] = hash(v[i][j]);
@@ -58,19 +58,14 @@ public class PrivateKey extends Key {
         if (v == null) {
             throw new IllegalStateException("Key not available for signing");
         }
-        BigInteger[] sign = sign(new BigInteger(hash(message)));
-        byte[][] result = new byte[sign.length][];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = sign[i].toByteArray();
-        }
-        return result;
+        return signHash(hash(message));
     }
     
-    public BigInteger[] sign(BigInteger hash) {
+    public byte[][] signHash(byte[] hash) {
         if (v == null) {
             throw new IllegalStateException("Key not available for signing");
         }
-        final BigInteger[] result = selectBasedOnHash(hash);
+        final byte[][] result = selectBasedOnHash(hash);
         clear();
         return result;
     }

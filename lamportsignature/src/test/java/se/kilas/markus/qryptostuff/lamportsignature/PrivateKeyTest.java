@@ -54,25 +54,26 @@ public class PrivateKeyTest {
 
 
     /**
-     * Test of sign method, of class PrivateKey.
+     * Test of signHash method, of class PrivateKey.
      */
     @Test
     public void testSign() throws NoSuchAlgorithmException {
         System.out.println("sign");
         
-        BigInteger hash = new BigInteger("0001000110100010", 2);
-        System.out.println("hash.hex: " + hash.toString(16));
-        System.out.println("hash.len: " + hash.toByteArray().length);
+        byte[] hash = new byte[] { (byte) 0x11, (byte) 0xa2 };
+        //BigInteger hash = new BigInteger("00010001 10100010", 2);
+        //System.out.println("hash.hex: " + hash.toString(16));
+        //System.out.println("hash.len: " + hash.toByteArray().length);
         
         final PrivateKey p = PrivateKey.generate(MessageDigest.getInstance("MD5"), new SecureRandom(new byte[] { (byte) 0 }));
         
         // Manually setup the expected result for 0001000110100010
-        BigInteger[] expResult = new BigInteger[] {
+        byte[][] expResult = new byte[][] {
             p.v[0][0], p.v[1][0], p.v[2][0], p.v[3][1], p.v[4][0], p.v[5][0], p.v[6][0], p.v[7][1], p.v[8][1], p.v[9][0], p.v[10][1], p.v[11][0], p.v[12][0], p.v[13][0], p.v[14][1], p.v[15][0]
         };
         
         // Sign
-        BigInteger[] result = p.sign(hash);
+        byte[][] result = p.signHash(hash);
 
         assertArrayEquals(expResult, result);
     }

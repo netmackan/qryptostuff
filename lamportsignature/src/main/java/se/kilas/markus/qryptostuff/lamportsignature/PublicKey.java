@@ -16,7 +16,6 @@
  */
 package se.kilas.markus.qryptostuff.lamportsignature;
 
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
@@ -26,31 +25,19 @@ import java.util.Arrays;
  */
 public class PublicKey extends Key {
     
-    public PublicKey(MessageDigest md, BigInteger[][] z) {
+    public PublicKey(MessageDigest md, byte[][][] z) {
         super(true, md, z);
     }
 
-    public boolean verify(byte[] digest, BigInteger[] signed) {
-        BigInteger[] picked = selectBasedOnHash(new BigInteger(digest));
+    public boolean verify(byte[] message, byte[][] signed) {
+        byte[][] picked = selectBasedOnHash(hash(message));
         
-        BigInteger[] signedAndHashed = new BigInteger[signed.length];
+        byte[][] signedAndHashed = new byte[signed.length][];
         for (int i = 0; i < signed.length; i++) {
             signedAndHashed[i] = hash(signed[i]);
         }
-        
-        return Arrays.equals(picked, signedAndHashed);
+
+        return Arrays.deepEquals(picked, signedAndHashed);
     }
-    
-    public boolean verify(byte[] message, byte[][] signed) {
-        BigInteger[] picked = selectBasedOnHash(new BigInteger(hash(message)));
-        
-        BigInteger[] signedAndHashed = new BigInteger[signed.length];
-        for (int i = 0; i < signed.length; i++) {
-            signedAndHashed[i] = hash(new BigInteger(signed[i]));
-        }
-        
-        return Arrays.equals(picked, signedAndHashed);
-    }
-    
     
 }

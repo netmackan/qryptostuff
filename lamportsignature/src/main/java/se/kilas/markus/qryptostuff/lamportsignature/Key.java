@@ -16,8 +16,8 @@
  */
 package se.kilas.markus.qryptostuff.lamportsignature;
 
-import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.Arrays;
 
 /**
  *
@@ -27,9 +27,9 @@ public abstract class Key {
 
     private final boolean publicType;
     private final MessageDigest md;
-    protected BigInteger[][] v;
+    protected byte[][][] v;
 
-    protected Key(boolean publicType, MessageDigest md, BigInteger[][] v) {
+    protected Key(boolean publicType, MessageDigest md, byte[][][] v) {
         if (md.getDigestLength() * 8 != v.length) {
             throw new IllegalArgumentException("Key should have the same number of pairs as the bit length of the message digest: " + md.getDigestLength() * 8 + " but was " + v.length);
         }
@@ -56,10 +56,10 @@ public abstract class Key {
         sb.append(publicType ? "PublicKey" : "PrivateKey").append("(").append(getDigestAlgorithm()).append(")");
         if (publicType) {
             sb.append(" {\n");
-            for (BigInteger[] v1 : v) {
+            for (byte[][] v1 : v) {
                 sb.append(" (");
                 for (int j = 0; j < v1.length; j++) {
-                    sb.append(String.format("%x", v1[j]));
+                    sb.append(Arrays.toString(v1[j]));
                     if (j < v1.length - 1) {
                         sb.append(", ");
                     }
@@ -71,15 +71,13 @@ public abstract class Key {
         return sb.toString();
     }
     
-    protected BigInteger[] selectBasedOnHash(BigInteger hash) { // TODO: change to take the message instead
+    protected byte[][] selectBasedOnHash(byte[] hash) {
         // TODO: assert bitlength
         
-        byte[] bytes = hash.toByteArray();
+        byte[][] s = new byte[hash.length * 8][];
         
-        BigInteger[] s = new BigInteger[bytes.length * 8];
-        
-        for (int i = 0; i < bytes.length; i++) {
-            byte b = bytes[i];
+        for (int i = 0; i < hash.length; i++) {
+            byte b = hash[i];
             boolean[] bb = toBooleanArray(b);
             //System.out.println("b: " + String.format("%x", b));
             //System.out.println("b: " + Arrays.toString(bb));
@@ -104,11 +102,11 @@ public abstract class Key {
         };
     }
     
-    protected BigInteger hash(BigInteger value) {
+    /*protected BigInteger hash(BigInteger value) {
         md.reset();
         byte[] digest = md.digest(value.toByteArray());
         return new BigInteger(digest);
-    }
+    }*/
     
     protected byte[] hash(byte[] value) {
         md.reset();
