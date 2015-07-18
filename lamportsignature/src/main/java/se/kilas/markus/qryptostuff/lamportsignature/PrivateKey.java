@@ -34,11 +34,11 @@ public class PrivateKey extends Key {
                 random.nextBytes(y1[j]);
             }
         }
-        return new PrivateKey(md, y);
+        return new PrivateKey(y, md);
     }
     
-    public PrivateKey(MessageDigest md, byte[][][] v) {
-        super(false, md, v);
+    public PrivateKey(byte[][][] v, MessageDigest md) {
+        super(v, md);
     }
 
     public PublicKey derivePublic() {
@@ -51,7 +51,7 @@ public class PrivateKey extends Key {
                 z[i][j] = hash(v[i][j]);
             }
         }
-        return new PublicKey(getMessageDigest(), z);
+        return new PublicKey(z, getMessageDigest());
     }
     
     public byte[][] sign(byte[] message) {
@@ -78,6 +78,11 @@ public class PrivateKey extends Key {
             v[i] = null;
         }
         v = null;
+    }
+    
+    @Override
+    public String toString() {
+        return "PrivateKey" + "(" + getDigestAlgorithm() + ")";
     }
     
 }

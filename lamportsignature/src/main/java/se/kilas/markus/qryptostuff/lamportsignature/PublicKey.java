@@ -18,6 +18,7 @@ package se.kilas.markus.qryptostuff.lamportsignature;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
+import org.bouncycastle.util.encoders.Hex;
 
 /**
  *
@@ -25,8 +26,8 @@ import java.util.Arrays;
  */
 public class PublicKey extends Key {
     
-    public PublicKey(MessageDigest md, byte[][][] z) {
-        super(true, md, z);
+    public PublicKey(byte[][][] z, MessageDigest md) {
+        super(z, md);
     }
 
     public boolean verify(byte[] message, byte[][] signed) {
@@ -40,4 +41,17 @@ public class PublicKey extends Key {
         return Arrays.deepEquals(picked, signedAndHashed);
     }
     
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("PublicKey").append("(").append(getDigestAlgorithm()).append(")");
+        sb.append(" {\n");
+        for (byte[][] v1 : v) {
+            for (byte[] v11 : v1) {
+                sb.append(Hex.toHexString(v11)).append("\n");
+            }
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }

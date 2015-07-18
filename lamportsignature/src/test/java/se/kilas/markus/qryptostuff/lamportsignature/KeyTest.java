@@ -31,12 +31,13 @@ public class KeyTest {
 
     /**
      * Test of selectBasedOnHash method, of class Key.
+     * @throws java.lang.Exception
      */
     @Test
     public void testSelectBasedOnHash() throws Exception {
         System.out.println("selectBasedOnHash");
         
-        Key instance = new KeyImpl(true, new MessageDigestImpl(2), new byte[][][] {
+        Key instance = new KeyImpl(new MessageDigestImpl(2), new byte[][][] {
             new byte[][] { Hex.decode("aa00"), Hex.decode("bb00") } ,
             new byte[][] { Hex.decode("aa01"), Hex.decode("bb01") } ,
             new byte[][] { Hex.decode("aa02"), Hex.decode("bb02") } ,
@@ -71,8 +72,8 @@ public class KeyTest {
 
     public class KeyImpl extends Key {
 
-        public KeyImpl(boolean publicType, MessageDigest md, byte[][][] v) {
-            super(publicType, md, v);
+        public KeyImpl(MessageDigest md, byte[][][] v) {
+            super(v, md);
         }
     }
 

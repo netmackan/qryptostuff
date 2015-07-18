@@ -17,7 +17,6 @@
 package se.kilas.markus.qryptostuff.lamportsignature;
 
 import java.security.MessageDigest;
-import org.bouncycastle.util.encoders.Hex;
 
 /**
  *
@@ -25,15 +24,13 @@ import org.bouncycastle.util.encoders.Hex;
  */
 public abstract class Key {
 
-    private final boolean publicType;
     private final MessageDigest md;
     protected byte[][][] v;
 
-    protected Key(boolean publicType, MessageDigest md, byte[][][] v) {
+    protected Key(byte[][][] v, MessageDigest md) {
         if (md.getDigestLength() * 8 != v.length) {
             throw new IllegalArgumentException("Key should have the same number of pairs as the bit length of the message digest: " + md.getDigestLength() * 8 + " but was " + v.length);
         }
-        this.publicType = publicType;
         this.md = md;
         this.v = v;
     }
@@ -49,23 +46,7 @@ public abstract class Key {
     protected MessageDigest getMessageDigest() {
         return md;
     }
-    
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(publicType ? "PublicKey" : "PrivateKey").append("(").append(getDigestAlgorithm()).append(")");
-        if (publicType) {
-            sb.append(" {\n");
-            for (byte[][] v1 : v) {
-                for (byte[] v11 : v1) {
-                    sb.append(Hex.toHexString(v11)).append("\n");
-                }
-            }
-            sb.append("}");
-        }
-        return sb.toString();
-    }
-    
+
     protected byte[][] selectBasedOnHash(byte[] hash) {
         if (hash.length * 8 != v.length) {
             throw new IllegalArgumentException("Hash should have the same bit length as key: " + v.length + " but was " + hash.length * 8);
