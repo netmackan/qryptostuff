@@ -24,9 +24,9 @@ import org.bouncycastle.util.encoders.Hex;
  *
  * @author Markus Kilås
  */
-public class PublicKey extends Key {
+public class LamportPublicKey extends LamportKey {
     
-    public PublicKey(byte[][][] z, MessageDigest md) {
+    public LamportPublicKey(byte[][][] z, MessageDigest md) {
         super(z, md);
     }
 

@@ -23,9 +23,9 @@ import java.security.SecureRandom;
  *
  * @author Markus Kilås
  */
-public class PrivateKey extends Key {
+public class LamportPrivateKey extends LamportKey {
     
-    public static PrivateKey generate(MessageDigest md, SecureRandom random) {
+    public static LamportPrivateKey generate(MessageDigest md, SecureRandom random) {
         final int length = md.getDigestLength();
         final byte[][][] y = new byte[length * 8][2][];
         for (byte[][] y1 : y) {
@@ -34,14 +34,14 @@ public class PrivateKey extends Key {
                 random.nextBytes(y1[j]);
             }
         }
-        return new PrivateKey(y, md);
+        return new LamportPrivateKey(y, md);
     }
     
-    public PrivateKey(byte[][][] v, MessageDigest md) {
+    public LamportPrivateKey(byte[][][] v, MessageDigest md) {
         super(v, md);
     }
 
-    public PublicKey derivePublic() {
+    public LamportPublicKey derivePublic() {
         if (v == null) {
             throw new IllegalStateException("Key not available");
         }
@@ -51,7 +51,7 @@ public class PrivateKey extends Key {
                 z[i][j] = hash(v[i][j]);
             }
         }
-        return new PublicKey(z, getMessageDigest());
+        return new LamportPublicKey(z, getMessageDigest());
     }
     
     public byte[][] sign(byte[] message) {

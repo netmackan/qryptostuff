@@ -22,12 +22,12 @@ import java.security.MessageDigest;
  *
  * @author Markus Kilås
  */
-public abstract class Key {
+public abstract class LamportKey {
 
     private final MessageDigest md;
     protected byte[][][] v;
 
-    protected Key(byte[][][] v, MessageDigest md) {
+    protected LamportKey(byte[][][] v, MessageDigest md) {
         if (md.getDigestLength() * 8 != v.length) {
             throw new IllegalArgumentException("Key should have the same number of pairs as the bit length of the message digest: " + md.getDigestLength() * 8 + " but was " + v.length);
         }

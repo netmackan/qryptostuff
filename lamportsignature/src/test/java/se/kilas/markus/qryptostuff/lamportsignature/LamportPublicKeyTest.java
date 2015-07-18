@@ -31,9 +31,9 @@ import static org.junit.Assert.*;
  *
  * @author Markus Kilås
  */
-public class PublicKeyTest {
+public class LamportPublicKeyTest {
     
-    public PublicKeyTest() {
+    public LamportPublicKeyTest() {
     }
     
     @BeforeClass
@@ -82,9 +82,9 @@ public class PublicKeyTest {
         
         // Key generation
         start = System.currentTimeMillis();
-        PrivateKey priv = PrivateKey.generate(MessageDigest.getInstance(digestAlgorithm), new SecureRandom());
+        LamportPrivateKey priv = LamportPrivateKey.generate(MessageDigest.getInstance(digestAlgorithm), new SecureRandom());
         System.out.println(priv);
-        PublicKey pub = priv.derivePublic();
+        LamportPublicKey pub = priv.derivePublic();
         System.out.println(pub);
         System.out.println("Key generation took " + (System.currentTimeMillis() - start) + " ms");
         System.out.println();
