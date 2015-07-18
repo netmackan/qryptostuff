@@ -21,6 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import org.bouncycastle.util.encoders.Hex;
 
 /**
  *
@@ -60,7 +61,7 @@ public class LamportSignatures1 {
             //System.out.println("Hashed message: " + new BigInteger(digest));
             //signed = priv.signHash(new BigInteger(digest));
             signed = priv.sign(message);
-            System.out.println("Signature: " + Arrays.deepToString(signed));
+            System.out.println("Signature: " + toHexArray(signed));
             System.out.println("Signing took " + (System.currentTimeMillis() - start) + " ms");
             System.out.println();
         }
@@ -106,6 +107,14 @@ public class LamportSignatures1 {
             System.out.println("Got expected: " + ex.getMessage());
         }
         
+    }
+
+    private static String toHexArray(byte[][] signed) {
+        final StringBuilder sb = new StringBuilder();
+        for (byte[] bytes : signed) {
+            sb.append(Hex.toHexString(bytes)).append("\n");
+        }
+        return sb.toString();
     }
 
 }

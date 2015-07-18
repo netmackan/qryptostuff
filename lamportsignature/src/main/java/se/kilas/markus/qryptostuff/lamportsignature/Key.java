@@ -17,7 +17,7 @@
 package se.kilas.markus.qryptostuff.lamportsignature;
 
 import java.security.MessageDigest;
-import java.util.Arrays;
+import org.bouncycastle.util.encoders.Hex;
 
 /**
  *
@@ -57,14 +57,9 @@ public abstract class Key {
         if (publicType) {
             sb.append(" {\n");
             for (byte[][] v1 : v) {
-                sb.append(" (");
-                for (int j = 0; j < v1.length; j++) {
-                    sb.append(Arrays.toString(v1[j]));
-                    if (j < v1.length - 1) {
-                        sb.append(", ");
-                    }
+                for (byte[] v11 : v1) {
+                    sb.append(Hex.toHexString(v11)).append("\n");
                 }
-                sb.append(")\n");
             }
             sb.append("}");
         }
@@ -72,42 +67,24 @@ public abstract class Key {
     }
     
     protected byte[][] selectBasedOnHash(byte[] hash) {
-        // TODO: assert bitlength
-        
-        byte[][] s = new byte[hash.length * 8][];
+        if (hash.length * 8 != v.length) {
+            throw new IllegalArgumentException("Hash should have the same bit length as key: " + v.length + " but was " + hash.length * 8);
+        }
+
+        byte[][] result = new byte[hash.length * 8][];
         
         for (int i = 0; i < hash.length; i++) {
-            byte b = hash[i];
-            boolean[] bb = toBooleanArray(b);
-            //System.out.println("b: " + String.format("%x", b));
-            //System.out.println("b: " + Arrays.toString(bb));
-            
             for (int j = 0; j < 8; j++) {
-                s[i * 8 + j] = bb[j] ? v[i * 8 + j][1] : v[i * 8 + j][0];
+                if ((hash[i] & 0x80 >> j) != 0) {
+                    result[i * 8 + j] = v[i * 8 + j][1]; 
+                } else {
+                    result[i * 8 + j] = v[i * 8 + j][0];
+                }
             }
         }
-        return s;
+        return result;
     }
 
-    protected static boolean[] toBooleanArray(byte b) {
-        return new boolean[] {
-            (b & 0x80) != 0,
-            (b & 0x80 >> 1) != 0,
-            (b & 0x80 >> 2) != 0,
-            (b & 0x80 >> 3) != 0,
-            (b & 0x80 >> 4) != 0,
-            (b & 0x80 >> 5) != 0,
-            (b & 0x80 >> 6) != 0,
-            (b & (0x80 >> 7)) != 0,
-        };
-    }
-    
-    /*protected BigInteger hash(BigInteger value) {
-        md.reset();
-        byte[] digest = md.digest(value.toByteArray());
-        return new BigInteger(digest);
-    }*/
-    
     protected byte[] hash(byte[] value) {
         md.reset();
         return md.digest(value);

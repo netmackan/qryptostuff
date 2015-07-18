@@ -16,7 +16,6 @@
  */
 package se.kilas.markus.qryptostuff.lamportsignature;
 
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -76,30 +75,6 @@ public class PrivateKeyTest {
         byte[][] result = p.signHash(hash);
 
         assertArrayEquals(expResult, result);
-    }
-    
-    @Test
-    public void testToBinaryArray() throws Exception {
-        assertEquals("00000000", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0x0)));
-        assertEquals("00000001", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0x1)));
-        assertEquals("00000010", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0x2)));
-        assertEquals("00000011", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0x3)));
-        assertEquals("00000100", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0x4)));
-        assertEquals("00000101", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0x5)));
-        assertEquals("00000110", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0x6)));
-        assertEquals("00000111", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0x7)));
-        assertEquals("00001000", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0x8)));
-        assertEquals("11111010", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0xfa)));
-        assertEquals("11001110", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0xce)));
-        assertEquals("11111111", booleanArrayToString(PrivateKey.toBooleanArray((byte) 0xff)));
-    }
-    
-    private String booleanArrayToString(boolean[] bs) {
-        final StringBuilder sb = new StringBuilder();
-        for (boolean b : bs) {
-            sb.append(b ? "1" : "0");
-        }
-        return sb.toString();
     }
     
 }
