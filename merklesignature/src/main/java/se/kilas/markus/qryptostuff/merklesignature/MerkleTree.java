@@ -30,11 +30,17 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
  *
  * @author Markus Kilås
  */
-public class Tree {
+public class MerkleTree {
+    
+    private final int num;
+    private final OTSPrivateKey[] X;
+    private final OTSPublicKey[] Y;
     private final ArrayList<ArrayList<Node>> nodes;
     private final Node top;
+    private int keyIndex = 1; // Note: state
+    private final int numLevels;
 
-    public static Tree generate(final int N, final OTSKeyPairGenerator keyGen, final MessageDigest md) {
+    public static MerkleTree generate(final int N, final OTSKeyPairGenerator keyGen, final MessageDigest md) {
         
         OTSPrivateKey[] X = new OTSPrivateKey[N];
         OTSPublicKey[] Y = new OTSPublicKey[N];
@@ -68,12 +74,16 @@ public class Tree {
             nodes.add(nextLevel);
             prevLevel = nextLevel;
         }
-        return new Tree(nodes, nodes.get(nodes.size() - 1).get(0));
+        return new MerkleTree(N, X, Y, nodes, nodes.get(nodes.size() - 1).get(0));
     }
 
-    private Tree(ArrayList<ArrayList<Node>> nodes, Node top) {
+    private MerkleTree(int num, OTSPrivateKey[] X, OTSPublicKey[] Y, ArrayList<ArrayList<Node>> nodes, Node top) {
+        this.num = num;
+        this.X = X;
+        this.Y = Y;
         this.nodes = nodes;
         this.top = top;
+        this.numLevels = nodes.size();
     }
 
     public Node getTop() {
@@ -130,6 +140,50 @@ public class Tree {
         }
         sb.append("}");
         return sb.toString();
+    }
+    
+    public MerkleSig sign(final byte[] message) throws IllegalStateException {
+        if (keyIndex++ >= num) {
+            throw new IllegalStateException("No more signatures available");
+        }
+        
+        OTSPrivateKey privateKey = X[keyIndex];
+        OTSPublicKey publicKey = Y[keyIndex];
+        byte[][] sigPrim = privateKey.sign(message);
+        
+        //
+        int i = keyIndex;
+        
+        // Find path A from a0,i to the root
+        Node auth[] = new Node[numLevels - 1];
+        
+        Node A0 = nodes.get(0).get(i);
+        System.out.println("A[0] = " + A0);
+        for (int j = 1; j < numLevels; j++) {
+            Node A_i;
+            Node Auth_i;
+            if (i % 2 == 0) { // Left side
+                i = i / 2;
+                A_i = nodes.get(j).get(i);
+                Auth_i = A_i.getRight();
+            } else { // Right side
+                i = (i - 1) / 2;
+                A_i = nodes.get(j).get((i - 1) / 2);
+                Auth_i = A_i.getLeft();
+            }
+            
+            System.out.println("A[" + j + "] = " + A_i + ", auth_" + (j - 1) + " = " + Auth_i);
+            auth[j - 1] = Auth_i;
+        }
+        
+        System.out.println(Arrays.toString(auth));
+        
+        byte[][] authsBytes = new byte[auth.length][];
+        for (int j = 0; j < authsBytes.length; j++) {
+            authsBytes[j] = auth[j].getValue().getValue();
+        }
+        
+        return new MerkleSig(sigPrim, authsBytes);
     }
     
 }

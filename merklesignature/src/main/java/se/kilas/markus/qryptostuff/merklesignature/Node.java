@@ -26,7 +26,7 @@ public class Node {
     private final Node left;
     private final Node right;
     private final Hash value;
-
+    
     public Node(final int i, final int j, final Hash value) {
         this(i, j, null, null, value);
     }
@@ -58,7 +58,7 @@ public class Node {
     public Hash getValue() {
         return value;
     }
-
+    
     @Override
     public String toString() {
         //return "xYx";

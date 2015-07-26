@@ -18,6 +18,7 @@ package se.kilas.markus.qryptostuff.merklesignature;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import org.bouncycastle.util.encoders.Hex;
 import se.kilas.markus.qryptostuff.lamportsignature.LamportKeyPairGenerator;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
 
@@ -43,12 +44,24 @@ public class Main {
         final MessageDigest md = MessageDigest.getInstance("MD5"); // XXX: Weak alg
         final SecureRandom random = new SecureRandom(new byte[] { 0 }); // XXX: static seed
         final OTSKeyPairGenerator keyGen = new LamportKeyPairGenerator(md, random);
-        Tree tree = Tree.generate(N, keyGen, md);
+        MerkleTree tree = MerkleTree.generate(N, keyGen, md);
         System.out.println(tree);
         System.out.println();
-        
-        
         System.out.println(tree.toTreeString());
+        final byte[] publicKey = tree.getTop().getValue().getValue();
+        System.out.println("Public key: " + Hex.toHexString(publicKey));
+        
+        System.out.println();
+        System.out.println("*** Signature generation ***");
+        
+        // Message
+        final byte[] message1 = "Lillan gick på vägen".getBytes("UTF-8");
+        System.out.println("Message1: " + new String(message1, "UTF-8"));
+        System.out.println();
+        
+        // Signature generation
+        MerkleSig sig = tree.sign(message1);
+        System.out.println("sig = " + sig);
     }
         
 }

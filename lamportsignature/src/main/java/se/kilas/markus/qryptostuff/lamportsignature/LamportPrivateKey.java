@@ -55,6 +55,7 @@ public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
         return new LamportPublicKey(z, getMessageDigest());
     }
     
+    @Override
     public byte[][] sign(byte[] message) {
         if (v == null) {
             throw new IllegalStateException("Key not available for signing");
