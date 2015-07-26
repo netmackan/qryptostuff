@@ -18,8 +18,8 @@ package se.kilas.markus.qryptostuff.merklesignature;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import se.kilas.markus.qryptostuff.lamportsignature.LamportPrivateKey;
-import se.kilas.markus.qryptostuff.lamportsignature.LamportPublicKey;
+import se.kilas.markus.qryptostuff.lamportsignature.LamportKeyPairGenerator;
+import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
 
 /**
  *
@@ -42,15 +42,8 @@ public class Main {
         // Generating keys
         final MessageDigest md = MessageDigest.getInstance("MD5"); // XXX: Weak alg
         final SecureRandom random = new SecureRandom(new byte[] { 0 }); // XXX: static seed
-        LamportPrivateKey[] X = new LamportPrivateKey[N];
-        LamportPublicKey[] Y = new LamportPublicKey[N];
-        Hash[] H = new Hash[N];
-        for (int i = 0; i < N; i++) {
-            X[i] = LamportPrivateKey.generate(md, random);
-            Y[i] = X[i].derivePublic();
-            H[i] = new Hash(Y[i].hashKey());
-        }
-        Tree tree = Tree.generate(H);
+        final OTSKeyPairGenerator keyGen = new LamportKeyPairGenerator(md, random);
+        Tree tree = Tree.generate(N, keyGen, md);
         System.out.println(tree);
         System.out.println();
         

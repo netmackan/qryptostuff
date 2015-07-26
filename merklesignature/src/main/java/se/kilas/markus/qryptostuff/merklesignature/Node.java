@@ -25,13 +25,13 @@ public class Node {
     private final int j;
     private final Node left;
     private final Node right;
-    private final byte[] value;
+    private final Hash value;
 
-    public Node(final int i, final int j, final byte[] value) {
+    public Node(final int i, final int j, final Hash value) {
         this(i, j, null, null, value);
     }
 
-    public Node(final int i, final int j, final Node left, final Node right, final byte[] value) {
+    public Node(final int i, final int j, final Node left, final Node right, final Hash value) {
         this.i = i;
         this.j = j;
         this.left = left;
@@ -53,6 +53,10 @@ public class Node {
 
     public Node getRight() {
         return right;
+    }
+
+    public Hash getValue() {
+        return value;
     }
 
     @Override

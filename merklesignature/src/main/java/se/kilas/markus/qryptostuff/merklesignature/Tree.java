@@ -16,10 +16,15 @@
  */
 package se.kilas.markus.qryptostuff.merklesignature;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPair;
+import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
+import se.kilas.markus.qryptostuff.onetimesignature.OTSPrivateKey;
+import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
 
 /**
  *
@@ -29,13 +34,24 @@ public class Tree {
     private final ArrayList<ArrayList<Node>> nodes;
     private final Node top;
 
-    public static Tree generate(final Hash[] hashes) {
+    public static Tree generate(final int N, final OTSKeyPairGenerator keyGen, final MessageDigest md) {
+        
+        OTSPrivateKey[] X = new OTSPrivateKey[N];
+        OTSPublicKey[] Y = new OTSPublicKey[N];
+        Hash[] H = new Hash[N];
+        for (int i = 0; i < N; i++) {
+            OTSKeyPair keyPair = keyGen.generate();
+            X[i] = keyPair.getPrivateKey();
+            Y[i] = keyPair.getPublicKey();
+            H[i] = new Hash(Y[i].hashKey(), "Y[" + i + "]");
+        }
+        
         ArrayList<ArrayList<Node>> nodes = new ArrayList<>();
         // Leaves
         ArrayList<Node> a0 = new ArrayList<>();
         int j = 0;
-        for (Hash h : hashes) {
-            a0.add(new Node(0, j, h.getValue()));
+        for (Hash h : H) {
+            a0.add(new Node(0, j, h));
             j++;
         }
         nodes.add(a0);
@@ -45,7 +61,9 @@ public class Tree {
         for (int i = 1; length > 0; i++, length /= 2) {
             ArrayList<Node> nextLevel = new ArrayList<>();
             for (j = 0; j < length; j++) {
-                nextLevel.add(new Node(i, j, prevLevel.get(j * 2), prevLevel.get(j * 2 + 1), null));
+                Node left = prevLevel.get(j * 2);
+                Node right = prevLevel.get(j * 2 + 1);
+                nextLevel.add(new Node(i, j, left, right, Hash.concat(left.getValue(), right.getValue(), md)));
             }
             nodes.add(nextLevel);
             prevLevel = nextLevel;
