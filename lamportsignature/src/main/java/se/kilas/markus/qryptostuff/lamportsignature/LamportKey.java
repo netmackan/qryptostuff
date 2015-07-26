@@ -70,5 +70,14 @@ public abstract class LamportKey {
         md.reset();
         return md.digest(value);
     }
+    public byte[] hashKey() {
+        md.reset();
+        for (byte[][] v1 : v) {
+            for (byte[] v11 : v1) {
+                md.digest(v11);
+            }
+        }
+        return md.digest();
+    }
     
 }
