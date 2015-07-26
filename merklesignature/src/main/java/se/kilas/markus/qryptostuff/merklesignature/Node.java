@@ -58,7 +58,7 @@ public class Node {
     @Override
     public String toString() {
         //return "xYx";
-        return String.format("a[%1d,%2d]", i, j); // XXX: Assumes max 9 levels
+        return String.format("a[%1d,%2d]", i, j); // XXX: Assumes max 10 levels
     }
 
     public String toOneLineString() {
