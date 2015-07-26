@@ -19,12 +19,13 @@ package se.kilas.markus.qryptostuff.lamportsignature;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import org.bouncycastle.util.encoders.Hex;
+import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
 
 /**
  *
  * @author Markus Kilås
  */
-public class LamportPublicKey extends LamportKey {
+public class LamportPublicKey extends LamportKey implements OTSPublicKey {
     
     public LamportPublicKey(byte[][][] z, MessageDigest md) {
         super(z, md);

@@ -18,12 +18,13 @@ package se.kilas.markus.qryptostuff.lamportsignature;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import se.kilas.markus.qryptostuff.onetimesignature.OTSPrivateKey;
 
 /**
  *
  * @author Markus Kilås
  */
-public class LamportPrivateKey extends LamportKey {
+public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
     
     public static LamportPrivateKey generate(MessageDigest md, SecureRandom random) {
         final int length = md.getDigestLength();
