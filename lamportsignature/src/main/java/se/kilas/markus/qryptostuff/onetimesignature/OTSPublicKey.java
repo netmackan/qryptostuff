@@ -22,6 +22,7 @@ package se.kilas.markus.qryptostuff.onetimesignature;
  */
 public interface OTSPublicKey {
 
+    boolean verify(byte[] message, byte[][] signed);
     byte[] hashKey(); // TODO: Maybe replace with getEncoded and have the digesting outside the class
     
 }

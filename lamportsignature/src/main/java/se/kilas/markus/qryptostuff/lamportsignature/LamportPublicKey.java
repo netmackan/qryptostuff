@@ -31,6 +31,7 @@ public class LamportPublicKey extends LamportKey implements OTSPublicKey {
         super(z, md);
     }
 
+    @Override
     public boolean verify(byte[] message, byte[][] signed) {
         byte[][] picked = selectBasedOnHash(hash(message));
         
