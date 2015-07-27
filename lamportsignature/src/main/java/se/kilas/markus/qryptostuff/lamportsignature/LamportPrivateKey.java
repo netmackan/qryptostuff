@@ -17,7 +17,7 @@
 package se.kilas.markus.qryptostuff.lamportsignature;
 
 import java.security.MessageDigest;
-import java.security.SecureRandom;
+import java.util.Random;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSPrivateKey;
 
 /**
@@ -26,7 +26,7 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSPrivateKey;
  */
 public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
     
-    public static LamportPrivateKey generate(MessageDigest md, SecureRandom random) {
+    public static LamportPrivateKey generate(MessageDigest md, Random random) {
         final int length = md.getDigestLength();
         final byte[][][] y = new byte[length * 8][2][];
         for (byte[][] y1 : y) {

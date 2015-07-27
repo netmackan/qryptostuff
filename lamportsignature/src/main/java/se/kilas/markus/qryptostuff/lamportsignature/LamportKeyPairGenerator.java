@@ -17,7 +17,7 @@
 package se.kilas.markus.qryptostuff.lamportsignature;
 
 import java.security.MessageDigest;
-import java.security.SecureRandom;
+import java.util.Random;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPair;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
 
@@ -28,9 +28,9 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
 public class LamportKeyPairGenerator implements OTSKeyPairGenerator {
 
     private final MessageDigest md;
-    private final SecureRandom random;
+    private final Random random;
     
-    public LamportKeyPairGenerator(final MessageDigest md, final SecureRandom random) {
+    public LamportKeyPairGenerator(final MessageDigest md, final Random random) {
         this.md = md;
         this.random = random;
     }
