@@ -17,10 +17,12 @@
 package se.kilas.markus.qryptostuff.merklesignature;
 
 import java.security.MessageDigest;
-import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Random;
 import org.bouncycastle.util.encoders.Hex;
 import se.kilas.markus.qryptostuff.lamportsignature.LamportKeyPairGenerator;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
+import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
 
 /**
  *
@@ -41,8 +43,8 @@ public class Main {
         System.out.println();
         
         // Generating keys
-        final MessageDigest md = MessageDigest.getInstance("MD5"); // XXX: Weak alg
-        final SecureRandom random = new SecureRandom(new byte[] { 0 }); // XXX: static seed
+        final MessageDigest md = MessageDigest.getInstance("MD5"); // XXX: Weak alg!
+        final Random random = new Random(1234); // XXX: Not SecureRandom and uses static seed!
         final OTSKeyPairGenerator keyGen = new LamportKeyPairGenerator(md, random);
         MerkleTree tree = MerkleTree.generate(N, keyGen, md);
         System.out.println(tree);
@@ -62,6 +64,43 @@ public class Main {
         // Signature generation
         MerkleSig sig = tree.sign(message1);
         System.out.println("sig = " + sig);
+        System.out.println();
+        
+        System.out.println("*** Signature verification ***");
+        {
+            OTSPublicKey Xi = sig.getPublicKey();
+            boolean ok = Xi.verify(message1, sig.getSigPrim());
+            System.out.println("sigPrim ok: " + ok);
+            if (!ok) {
+                System.out.println("Signature verification failed!");
+            } else {
+                Hash A0 = new Hash(Xi.hashKey(), "A0");
+                System.out.println("A[0] = " + A0);
+                
+                int i = sig.getIndex();
+                
+                Hash Ai = A0;
+                for (int j = 0; j < sig.getAuth().length; j++) {
+                    if (i % 2 == 0) {
+                        Ai = Hash.concat(Ai, new Hash(sig.getAuth()[j], "auth" + j), md);
+                        i = i / 2;
+                    } else {
+                        Ai = Hash.concat(new Hash(sig.getAuth()[j], "auth" + j), Ai, md);
+                        i = (i - 1) / 2;
+                    }
+                    System.out.println("A[" + (j + 1) + "] = " + Ai);
+                }
+                System.out.println("Ai=" + Ai + " = " + Hex.toHexString(Ai.getValue()));
+                System.out.println("Public key =                    " + Hex.toHexString(publicKey));
+                boolean keyMatches = Arrays.equals(publicKey, Ai.getValue());
+                System.out.println("Matches: " + keyMatches);
+                if (!keyMatches) {
+                    System.out.println("Signature verification failed!");
+                }
+            }
+        }
+        
+        
     }
         
 }

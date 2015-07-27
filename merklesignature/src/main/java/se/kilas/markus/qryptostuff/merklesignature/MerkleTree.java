@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import org.bouncycastle.util.encoders.Hex;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPair;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSPrivateKey;
@@ -50,6 +51,7 @@ public class MerkleTree {
             X[i] = keyPair.getPrivateKey();
             Y[i] = keyPair.getPublicKey();
             H[i] = new Hash(Y[i].hashKey(), "Y[" + i + "]");
+            System.out.println("H[" + i + "] = " + H[i] + " = " + Hex.toHexString(H[i].getValue()));
         }
         
         ArrayList<ArrayList<Node>> nodes = new ArrayList<>();
@@ -143,7 +145,7 @@ public class MerkleTree {
     }
     
     public MerkleSig sign(final byte[] message) throws IllegalStateException {
-        if (keyIndex++ >= num) {
+        if (++keyIndex >= num) {
             throw new IllegalStateException("No more signatures available");
         }
         
@@ -168,7 +170,7 @@ public class MerkleTree {
                 Auth_i = A_i.getRight();
             } else { // Right side
                 i = (i - 1) / 2;
-                A_i = nodes.get(j).get((i - 1) / 2);
+                A_i = nodes.get(j).get(i);
                 Auth_i = A_i.getLeft();
             }
             
@@ -183,7 +185,7 @@ public class MerkleTree {
             authsBytes[j] = auth[j].getValue().getValue();
         }
         
-        return new MerkleSig(sigPrim, authsBytes);
+        return new MerkleSig(sigPrim, publicKey, keyIndex, authsBytes);
     }
     
 }
