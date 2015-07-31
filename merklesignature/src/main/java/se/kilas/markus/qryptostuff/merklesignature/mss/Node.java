@@ -20,7 +20,7 @@ package se.kilas.markus.qryptostuff.merklesignature.mss;
  *
  * @author Markus Kilås
  */
-public class Node {
+class Node {
     private final int i;
     private final int j;
     private final Node left;

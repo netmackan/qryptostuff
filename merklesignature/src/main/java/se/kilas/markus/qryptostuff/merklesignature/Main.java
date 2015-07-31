@@ -17,7 +17,7 @@
 package se.kilas.markus.qryptostuff.merklesignature;
 
 import se.kilas.markus.qryptostuff.merklesignature.mss.MerkleSig;
-import se.kilas.markus.qryptostuff.merklesignature.mss.MerkleTree;
+import se.kilas.markus.qryptostuff.merklesignature.mss.Array2MerkleTree;
 import java.security.MessageDigest;
 import java.util.Random;
 import org.bouncycastle.util.encoders.Hex;
@@ -46,11 +46,11 @@ public class Main {
         final MessageDigest md = MessageDigest.getInstance("MD5"); // XXX: Weak alg!
         final Random random = new Random(1234); // XXX: Not SecureRandom and uses static seed!
         final OTSKeyPairGenerator keyGen = new LamportKeyPairGenerator(md, random);
-        MerkleTree tree = MerkleTree.generate(N, keyGen, md);
+        Array2MerkleTree tree = Array2MerkleTree.generate(N, keyGen, md);
         System.out.println(tree);
         System.out.println();
         System.out.println(tree.toTreeString());
-        final byte[] publicKey = tree.getTop().getValue().getValue();
+        final byte[] publicKey = tree.getPublicKey();
         System.out.println("Public key: " + Hex.toHexString(publicKey));
         
         System.out.println();
