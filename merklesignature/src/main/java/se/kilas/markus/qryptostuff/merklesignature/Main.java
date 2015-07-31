@@ -29,7 +29,7 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
  * @author Markus Kilås
  */
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         System.out.println("MerkleSignature");
         
         

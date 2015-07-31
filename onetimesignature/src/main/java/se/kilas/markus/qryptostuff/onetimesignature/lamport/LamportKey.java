@@ -27,7 +27,7 @@ public abstract class LamportKey {
     private final MessageDigest md;
     protected byte[][][] v;
 
-    protected LamportKey(byte[][][] v, MessageDigest md) {
+    protected LamportKey(final byte[][][] v, final MessageDigest md) {
         if (md.getDigestLength() * 8 != v.length) {
             throw new IllegalArgumentException("Key should have the same number of pairs as the bit length of the message digest: " + md.getDigestLength() * 8 + " but was " + v.length);
         }
@@ -47,7 +47,7 @@ public abstract class LamportKey {
         return md;
     }
 
-    protected byte[][] selectBasedOnHash(byte[] hash) {
+    protected byte[][] selectBasedOnHash(final byte[] hash) {
         if (hash.length * 8 != v.length) {
             throw new IllegalArgumentException("Hash should have the same bit length as key: " + v.length + " but was " + hash.length * 8);
         }
@@ -66,7 +66,7 @@ public abstract class LamportKey {
         return result;
     }
 
-    protected byte[] hash(byte[] value) {
+    protected byte[] hash(final byte[] value) {
         md.reset();
         return md.digest(value);
     }

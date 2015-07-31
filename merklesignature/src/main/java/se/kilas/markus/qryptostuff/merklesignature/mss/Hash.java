@@ -29,7 +29,7 @@ public class Hash {
     private final byte[] value;
     private final String name;
 
-    public static Hash concat(Hash left, Hash right, MessageDigest md) {
+    public static Hash concat(final Hash left, final Hash right, final MessageDigest md) {
         md.reset();
         md.update(left.value);
         md.update(right.value);

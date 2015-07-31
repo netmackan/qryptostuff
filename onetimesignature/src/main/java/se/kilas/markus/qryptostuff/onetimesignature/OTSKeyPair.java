@@ -24,7 +24,7 @@ public class OTSKeyPair {
     private final OTSPrivateKey privateKey;
     private final OTSPublicKey publicKey;
 
-    public OTSKeyPair(OTSPrivateKey privateKey, OTSPublicKey publicKey) {
+    public OTSKeyPair(final OTSPrivateKey privateKey, final OTSPublicKey publicKey) {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
     }

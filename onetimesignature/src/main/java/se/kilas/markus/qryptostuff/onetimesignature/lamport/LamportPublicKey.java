@@ -27,12 +27,12 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
  */
 public class LamportPublicKey extends LamportKey implements OTSPublicKey {
     
-    public LamportPublicKey(byte[][][] z, MessageDigest md) {
+    public LamportPublicKey(final byte[][][] z, final MessageDigest md) {
         super(z, md);
     }
 
     @Override
-    public boolean verify(byte[] message, byte[][] signed) {
+    public boolean verify(final byte[] message, final byte[][] signed) {
         byte[][] picked = selectBasedOnHash(hash(message));
         
         byte[][] signedAndHashed = new byte[signed.length][];

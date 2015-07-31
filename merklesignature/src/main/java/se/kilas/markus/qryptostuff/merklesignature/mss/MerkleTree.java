@@ -23,6 +23,6 @@ package se.kilas.markus.qryptostuff.merklesignature.mss;
 public interface MerkleTree {
 
     byte[] getPublicKey();
-    MerkleSig sign(final byte[] message) throws IllegalStateException;
+    MerkleSig sign(byte[] message) throws IllegalStateException;
     
 }

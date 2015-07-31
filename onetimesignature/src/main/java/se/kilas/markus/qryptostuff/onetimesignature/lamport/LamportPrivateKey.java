@@ -26,7 +26,7 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSPrivateKey;
  */
 public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
     
-    public static LamportPrivateKey generate(MessageDigest md, Random random) {
+    public static LamportPrivateKey generate(final MessageDigest md, final Random random) {
         final int length = md.getDigestLength();
         final byte[][][] y = new byte[length * 8][2][];
         for (byte[][] y1 : y) {
@@ -38,7 +38,7 @@ public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
         return new LamportPrivateKey(y, md);
     }
     
-    public LamportPrivateKey(byte[][][] v, MessageDigest md) {
+    public LamportPrivateKey(final byte[][][] v, final MessageDigest md) {
         super(v, md);
     }
 
@@ -56,14 +56,14 @@ public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
     }
     
     @Override
-    public byte[][] sign(byte[] message) {
+    public byte[][] sign(final byte[] message) {
         if (v == null) {
             throw new IllegalStateException("Key not available for signing");
         }
         return signHash(hash(message));
     }
     
-    public byte[][] signHash(byte[] hash) {
+    public byte[][] signHash(final byte[] hash) {
         if (v == null) {
             throw new IllegalStateException("Key not available for signing");
         }

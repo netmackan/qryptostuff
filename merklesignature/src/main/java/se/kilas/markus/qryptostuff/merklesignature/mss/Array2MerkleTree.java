@@ -81,7 +81,7 @@ public class Array2MerkleTree implements MerkleTree {
         return new Array2MerkleTree(N, X, Y, nodes, nodes.get(nodes.size() - 1).get(0), md);
     }
 
-    private Array2MerkleTree(int num, OTSPrivateKey[] X, OTSPublicKey[] Y, ArrayList<ArrayList<Node>> nodes, Node top, MessageDigest md) {
+    private Array2MerkleTree(final int num, final OTSPrivateKey[] X, final OTSPublicKey[] Y, final ArrayList<ArrayList<Node>> nodes, final Node top, final MessageDigest md) {
         this.num = num;
         this.X = X;
         this.Y = Y;

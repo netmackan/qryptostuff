@@ -33,7 +33,7 @@ public class MerkleSig {
     private final byte[][] auth;
     private final String hashAlgorithm;
 
-    public MerkleSig(byte[][] sigPrim, OTSPublicKey publicKey, int index, byte[][] auth, String hashAlgorithm) {
+    public MerkleSig(final byte[][] sigPrim, final OTSPublicKey publicKey, final int index, final byte[][] auth, final String hashAlgorithm) {
         this.sigPrim = sigPrim;
         this.publicKey = publicKey;
         this.index = index;
@@ -76,7 +76,7 @@ public class MerkleSig {
         return sb.toString();
     }
     
-    private static String toHexArray(byte[][] signed) {
+    private static String toHexArray(final byte[][] signed) {
         final StringBuilder sb = new StringBuilder();
         for (byte[] bytes : signed) {
             sb.append(Hex.toHexString(bytes)).append("\n");
@@ -84,7 +84,7 @@ public class MerkleSig {
         return sb.toString();
     }
 
-    public boolean verify(byte[] message1, byte[] masterPublicKey) throws NoSuchAlgorithmException {
+    public boolean verify(final byte[] message1, final byte[] masterPublicKey) throws NoSuchAlgorithmException {
         
         boolean ok = publicKey.verify(message1, sigPrim);
         System.out.println("sigPrim ok: " + ok);
