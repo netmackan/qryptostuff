@@ -16,4 +16,7 @@
         <netbeans.checkstyle.format>true</netbeans.checkstyle.format>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
     </properties>
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>Winternitz</word>
+    </spellchecker-wordlist>
 </project-shared-configuration>

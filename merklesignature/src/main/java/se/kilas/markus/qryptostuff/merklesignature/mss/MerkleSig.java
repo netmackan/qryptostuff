@@ -23,14 +23,15 @@ import org.bouncycastle.util.encoders.Hex;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
 
 /**
+ * Full Merkle signature holder.
  *
  * @author Markus Kilås
  */
 public class MerkleSig {
 
     private final byte[][] sigPrim;
-    private final OTSPublicKey publicKey; // TODO: Not according to spec but reciever needs to get it from somewhere(?)
-    private final int index; // TODO: maybe there is an alternative solution to this
+    private final OTSPublicKey publicKey; // TODO: Maybe not needed if winternitz OTS is used
+    private final int index;
     private final byte[][] auth;
     private final String hashAlgorithm;
 
