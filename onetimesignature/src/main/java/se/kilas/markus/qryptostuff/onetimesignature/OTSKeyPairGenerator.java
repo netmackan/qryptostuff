@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 user
+ * Copyright (C) 2015 Markus Kilås
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ package se.kilas.markus.qryptostuff.onetimesignature;
 
 /**
  *
- * @author user
+ * @author Markus Kilås
  */
 public interface OTSKeyPairGenerator {
     OTSKeyPair generate();
