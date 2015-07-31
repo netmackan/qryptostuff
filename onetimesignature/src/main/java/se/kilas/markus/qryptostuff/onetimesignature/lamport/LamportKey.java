@@ -38,11 +38,11 @@ public abstract class LamportKey {
     public String getDigestAlgorithm() {
         return md.getAlgorithm();
     }
-    
+
     public int getSize() {
         return md.getDigestLength();
     }
-    
+
     protected MessageDigest getMessageDigest() {
         return md;
     }
@@ -53,11 +53,11 @@ public abstract class LamportKey {
         }
 
         byte[][] result = new byte[hash.length * 8][];
-        
+
         for (int i = 0; i < hash.length; i++) {
             for (int j = 0; j < 8; j++) {
                 if ((hash[i] & 0x80 >> j) != 0) {
-                    result[i * 8 + j] = v[i * 8 + j][1]; 
+                    result[i * 8 + j] = v[i * 8 + j][1];
                 } else {
                     result[i * 8 + j] = v[i * 8 + j][0];
                 }
@@ -80,5 +80,5 @@ public abstract class LamportKey {
         }
         return md.digest();
     }
-    
+
 }

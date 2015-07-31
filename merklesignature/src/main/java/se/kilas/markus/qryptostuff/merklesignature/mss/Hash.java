@@ -17,15 +17,14 @@
 package se.kilas.markus.qryptostuff.merklesignature.mss;
 
 //import org.bouncycastle.util.encoders.Hex;
-
 import java.security.MessageDigest;
-
 
 /**
  *
  * @author Markus Kilås
  */
 public class Hash {
+
     private final byte[] value;
     private final String name;
 
@@ -35,7 +34,7 @@ public class Hash {
         md.update(right.value);
         return new Hash(md.digest(), left.name + "||" + right.name);
     }
-    
+
     public Hash(final byte[] value, final String name) {
         this.value = value;
         this.name = name;
@@ -54,5 +53,5 @@ public class Hash {
         return "H(" + name + ")";
         //return "Hash:" + Hex.toHexString(value);
     }
-    
+
 }

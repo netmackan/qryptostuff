@@ -29,19 +29,19 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
  * @author Markus Kilås
  */
 public class Main {
+
     public static void main(final String[] args) throws Exception {
         System.out.println("MerkleSignature");
-        
-        
+
         System.out.println();
         System.out.println("*** Key generation ***");
-        
+
         // Number of messages
         final int n = 3;
         final int N = 1 << n;
         System.out.println("N = 2^n = 2^" + n + " = " + N);
         System.out.println();
-        
+
         // Generating keys
         final MessageDigest md = MessageDigest.getInstance("MD5"); // XXX: Weak alg!
         final Random random = new Random(1234); // XXX: Not SecureRandom and uses static seed!
@@ -52,29 +52,29 @@ public class Main {
         System.out.println(tree.toTreeString());
         final byte[] publicKey = tree.getPublicKey();
         System.out.println("Public key: " + Hex.toHexString(publicKey));
-        
+
         System.out.println();
         System.out.println("*** Signature generation ***");
-        
+
         // Message
         final byte[] message1 = "Lillan gick på vägen".getBytes("UTF-8");
         System.out.println("Message1: " + new String(message1, "UTF-8"));
         System.out.println();
-        
+
         // Signature generation
         MerkleSig sig = tree.sign(message1);
         System.out.println("sig = " + sig);
         System.out.println();
-        
+
         System.out.println("*** Signature verification ***");
         boolean ok = sig.verify(message1, publicKey);
         System.out.println("Merkle signature ok: " + ok);
-        
+
         final byte[] message2 = "Lillan gick ur vägen".getBytes("UTF-8");
         System.out.println("Message2: " + new String(message1, "UTF-8"));
         ok = sig.verify(message2, publicKey);
         System.out.println("message1==message2: " + ok);
-        
+
     }
-        
+
 }

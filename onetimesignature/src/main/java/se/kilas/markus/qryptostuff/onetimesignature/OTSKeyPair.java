@@ -21,6 +21,7 @@ package se.kilas.markus.qryptostuff.onetimesignature;
  * @author Markus Kilås
  */
 public class OTSKeyPair {
+
     private final OTSPrivateKey privateKey;
     private final OTSPublicKey publicKey;
 
@@ -28,11 +29,11 @@ public class OTSKeyPair {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
     }
-    
+
     public OTSPrivateKey getPrivateKey() {
         return privateKey;
     }
-    
+
     public OTSPublicKey getPublicKey() {
         return publicKey;
     }
@@ -41,5 +42,5 @@ public class OTSKeyPair {
     public String toString() {
         return "OTSKeyPair{" + "privateKey=" + privateKey + ", publicKey=" + publicKey + '}';
     }
-    
+
 }

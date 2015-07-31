@@ -25,7 +25,7 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSPrivateKey;
  * @author Markus Kilås
  */
 public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
-    
+
     public static LamportPrivateKey generate(final MessageDigest md, final Random random) {
         final int length = md.getDigestLength();
         final byte[][][] y = new byte[length * 8][2][];
@@ -37,7 +37,7 @@ public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
         }
         return new LamportPrivateKey(y, md);
     }
-    
+
     public LamportPrivateKey(final byte[][][] v, final MessageDigest md) {
         super(v, md);
     }
@@ -46,7 +46,7 @@ public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
         if (v == null) {
             throw new IllegalStateException("Key not available");
         }
-        final byte[][][] z  = new byte[v.length][2][];
+        final byte[][][] z = new byte[v.length][2][];
         for (int i = 0; i < v.length; i++) {
             for (int j = 0; j < 2; j++) {
                 z[i][j] = hash(v[i][j]);
@@ -54,7 +54,7 @@ public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
         }
         return new LamportPublicKey(z, getMessageDigest());
     }
-    
+
     @Override
     public byte[][] sign(final byte[] message) {
         if (v == null) {
@@ -62,7 +62,7 @@ public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
         }
         return signHash(hash(message));
     }
-    
+
     public byte[][] signHash(final byte[] hash) {
         if (v == null) {
             throw new IllegalStateException("Key not available for signing");
@@ -81,10 +81,10 @@ public class LamportPrivateKey extends LamportKey implements OTSPrivateKey {
         }
         v = null;
     }
-    
+
     @Override
     public String toString() {
         return "PrivateKey" + "(" + getDigestAlgorithm() + ")";
     }
-    
+
 }

@@ -29,17 +29,17 @@ public class LamportKeyPairGenerator implements OTSKeyPairGenerator {
 
     private final MessageDigest md;
     private final Random random;
-    
+
     public LamportKeyPairGenerator(final MessageDigest md, final Random random) {
         this.md = md;
         this.random = random;
     }
-    
+
     @Override
     public OTSKeyPair generate() {
         final LamportPrivateKey privateKey = LamportPrivateKey.generate(md, random);
         final LamportPublicKey publicKey = privateKey.derivePublic();
         return new OTSKeyPair(privateKey, publicKey);
     }
-    
+
 }

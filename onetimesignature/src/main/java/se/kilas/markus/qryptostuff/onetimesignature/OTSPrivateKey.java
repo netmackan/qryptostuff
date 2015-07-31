@@ -21,5 +21,6 @@ package se.kilas.markus.qryptostuff.onetimesignature;
  * @author Markus Kilås
  */
 public interface OTSPrivateKey {
+
     byte[][] sign(byte[] message); // TODO: define a serialized form
 }

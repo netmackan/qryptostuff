@@ -27,6 +27,7 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
  * @author Markus Kilås
  */
 public class MerkleSig {
+
     private final byte[][] sigPrim;
     private final OTSPublicKey publicKey; // TODO: Not according to spec but reciever needs to get it from somewhere(?)
     private final int index; // TODO: maybe there is an alternative solution to this
@@ -52,7 +53,7 @@ public class MerkleSig {
     public OTSPublicKey getPublicKey() {
         return publicKey;
     }
-    
+
     public int getIndex() {
         return index;
     }
@@ -75,7 +76,7 @@ public class MerkleSig {
         sb.append("}");
         return sb.toString();
     }
-    
+
     private static String toHexArray(final byte[][] signed) {
         final StringBuilder sb = new StringBuilder();
         for (byte[] bytes : signed) {
@@ -85,7 +86,7 @@ public class MerkleSig {
     }
 
     public boolean verify(final byte[] message1, final byte[] masterPublicKey) throws NoSuchAlgorithmException {
-        
+
         boolean ok = publicKey.verify(message1, sigPrim);
         System.out.println("sigPrim ok: " + ok);
         if (!ok) {
@@ -93,7 +94,7 @@ public class MerkleSig {
             return false;
         } else {
             MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
-            
+
             Hash A0 = new Hash(publicKey.hashKey(), "A0");
             System.out.println("A[0] = " + A0);
 

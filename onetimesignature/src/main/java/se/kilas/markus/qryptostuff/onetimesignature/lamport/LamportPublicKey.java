@@ -26,7 +26,7 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
  * @author Markus Kilås
  */
 public class LamportPublicKey extends LamportKey implements OTSPublicKey {
-    
+
     public LamportPublicKey(final byte[][][] z, final MessageDigest md) {
         super(z, md);
     }
@@ -34,7 +34,7 @@ public class LamportPublicKey extends LamportKey implements OTSPublicKey {
     @Override
     public boolean verify(final byte[] message, final byte[][] signed) {
         byte[][] picked = selectBasedOnHash(hash(message));
-        
+
         byte[][] signedAndHashed = new byte[signed.length][];
         for (int i = 0; i < signed.length; i++) {
             signedAndHashed[i] = hash(signed[i]);
@@ -42,7 +42,7 @@ public class LamportPublicKey extends LamportKey implements OTSPublicKey {
 
         return Arrays.deepEquals(picked, signedAndHashed);
     }
-    
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();

@@ -32,26 +32,25 @@ import static org.junit.Assert.*;
  * @author Markus Kilås
  */
 public class LamportPublicKeyTest {
-    
+
     public LamportPublicKeyTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
-
 
     @Test
     public void testGenerateSignVerifySHA1() throws Exception {
@@ -64,13 +63,13 @@ public class LamportPublicKeyTest {
         System.out.println("testGenerateSignVerifySHA256");
         generateSignAndVerify("SHA-256");
     }
-    
+
     @Test
     public void testGenerateSignVerifySHA384() throws Exception {
         System.out.println("testGenerateSignVerifySHA384");
         generateSignAndVerify("SHA-384");
     }
-    
+
     @Test
     public void testGenerateSignVerifySHA512() throws Exception {
         System.out.println("testGenerateSignVerifySHA512");
@@ -79,7 +78,7 @@ public class LamportPublicKeyTest {
 
     private void generateSignAndVerify(final String digestAlgorithm) throws Exception {
         long start;
-        
+
         // Key generation
         start = System.currentTimeMillis();
         LamportPrivateKey priv = LamportPrivateKey.generate(MessageDigest.getInstance(digestAlgorithm), new SecureRandom());
@@ -88,12 +87,12 @@ public class LamportPublicKeyTest {
         System.out.println(pub);
         System.out.println("Key generation took " + (System.currentTimeMillis() - start) + " ms");
         System.out.println();
-        
+
         // Message
         final byte[] message = "Lillan gick på vägen".getBytes("UTF-8");
         System.out.println("Message: " + new String(message, "UTF-8"));
         System.out.println();
-        
+
         // Signing
         byte[][] signed;
         {
@@ -103,7 +102,7 @@ public class LamportPublicKeyTest {
             System.out.println("Signing took " + (System.currentTimeMillis() - start) + " ms");
             System.out.println();
         }
-        
+
         // Verifying ok
         {
             start = System.currentTimeMillis();
@@ -113,7 +112,7 @@ public class LamportPublicKeyTest {
             System.out.println();
             assertTrue("consistent signature", ok);
         }
-        
+
         // Verifying modified
         final byte[] message2 = "Lillan gick på välen".getBytes("UTF-8");
         System.out.println("Message: " + new String(message2, "UTF-8"));
@@ -125,7 +124,7 @@ public class LamportPublicKeyTest {
             System.out.println();
             assertFalse("inconsistent signature", ok);
         }
-        
+
         // Trying to signHash twice with the same key
         try {
             start = System.currentTimeMillis();
@@ -134,10 +133,11 @@ public class LamportPublicKeyTest {
             System.out.println("Signing took " + (System.currentTimeMillis() - start) + " ms");
             System.out.println();
             fail("Should have failed!");
-        } catch (IllegalStateException ex) {
+        }
+        catch (IllegalStateException ex) {
             System.out.println("Got expected: " + ex.getMessage());
         }
-        
+
     }
 
     private static String toHexArray(byte[][] signed) {
@@ -147,5 +147,5 @@ public class LamportPublicKeyTest {
         }
         return sb.toString();
     }
-    
+
 }

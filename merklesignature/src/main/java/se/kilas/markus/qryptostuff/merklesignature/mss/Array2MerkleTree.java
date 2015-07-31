@@ -33,7 +33,7 @@ import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
  * @author Markus Kilås
  */
 public class Array2MerkleTree implements MerkleTree {
-    
+
     private final int num;
     private final OTSPrivateKey[] X;
     private final OTSPublicKey[] Y;
@@ -44,7 +44,7 @@ public class Array2MerkleTree implements MerkleTree {
     private final MessageDigest md;
 
     public static Array2MerkleTree generate(final int N, final OTSKeyPairGenerator keyGen, final MessageDigest md) {
-        
+
         OTSPrivateKey[] X = new OTSPrivateKey[N];
         OTSPublicKey[] Y = new OTSPublicKey[N];
         Hash[] H = new Hash[N];
@@ -55,7 +55,7 @@ public class Array2MerkleTree implements MerkleTree {
             H[i] = new Hash(Y[i].hashKey(), "Y[" + i + "]");
             System.out.println("H[" + i + "] = " + H[i] + " = " + Hex.toHexString(H[i].getValue()));
         }
-        
+
         ArrayList<ArrayList<Node>> nodes = new ArrayList<>();
         // Leaves
         ArrayList<Node> a0 = new ArrayList<>();
@@ -114,6 +114,7 @@ public class Array2MerkleTree implements MerkleTree {
      * indent2: 1 << (L+1) - 1
      *
      * ]]></pre>
+     *
      * @return
      */
     public String toTreeString() {
@@ -146,28 +147,28 @@ public class Array2MerkleTree implements MerkleTree {
         sb.append("}");
         return sb.toString();
     }
-    
+
     @Override
     public byte[] getPublicKey() {
         return getTop().getValue().getValue();
     }
-    
+
     @Override
     public MerkleSig sign(final byte[] message) throws IllegalStateException {
         if (++keyIndex >= num) {
             throw new IllegalStateException("No more signatures available");
         }
-        
+
         OTSPrivateKey privateKey = X[keyIndex];
         OTSPublicKey publicKey = Y[keyIndex];
         byte[][] sigPrim = privateKey.sign(message);
-        
+
         //
         int i = keyIndex;
-        
+
         // Find path A from a0,i to the root
         Node auth[] = new Node[numLevels - 1];
-        
+
         Node A0 = nodes.get(0).get(i);
         System.out.println("A[0] = " + A0);
         for (int j = 1; j < numLevels; j++) {
@@ -182,19 +183,19 @@ public class Array2MerkleTree implements MerkleTree {
                 A_i = nodes.get(j).get(i);
                 Auth_i = A_i.getLeft();
             }
-            
+
             System.out.println("A[" + j + "] = " + A_i + ", auth_" + (j - 1) + " = " + Auth_i);
             auth[j - 1] = Auth_i;
         }
-        
+
         System.out.println(Arrays.toString(auth));
-        
+
         byte[][] authsBytes = new byte[auth.length][];
         for (int j = 0; j < authsBytes.length; j++) {
             authsBytes[j] = auth[j].getValue().getValue();
         }
-        
+
         return new MerkleSig(sigPrim, publicKey, keyIndex, authsBytes, md.getAlgorithm());
     }
-    
+
 }

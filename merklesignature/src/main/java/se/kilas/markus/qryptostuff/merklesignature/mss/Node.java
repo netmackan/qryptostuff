@@ -21,12 +21,13 @@ package se.kilas.markus.qryptostuff.merklesignature.mss;
  * @author Markus Kilås
  */
 class Node {
+
     private final int i;
     private final int j;
     private final Node left;
     private final Node right;
     private final Hash value;
-    
+
     public Node(final int i, final int j, final Hash value) {
         this(i, j, null, null, value);
     }
@@ -58,7 +59,7 @@ class Node {
     public Hash getValue() {
         return value;
     }
-    
+
     @Override
     public String toString() {
         //return "xYx";
@@ -74,5 +75,5 @@ class Node {
         sb.append("]");
         return sb.toString();
     }
-    
+
 }
