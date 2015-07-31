@@ -16,6 +16,8 @@
  */
 package se.kilas.markus.qryptostuff.merklesignature;
 
+import se.kilas.markus.qryptostuff.merklesignature.mss.MerkleSig;
+import se.kilas.markus.qryptostuff.merklesignature.mss.MerkleTree;
 import java.security.MessageDigest;
 import java.util.Random;
 import org.bouncycastle.util.encoders.Hex;

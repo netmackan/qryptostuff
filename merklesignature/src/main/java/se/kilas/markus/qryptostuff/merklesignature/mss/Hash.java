@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.kilas.markus.qryptostuff.merklesignature;
+package se.kilas.markus.qryptostuff.merklesignature.mss;
 
 //import org.bouncycastle.util.encoders.Hex;
 
