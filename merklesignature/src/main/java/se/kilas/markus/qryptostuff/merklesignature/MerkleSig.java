@@ -16,6 +16,9 @@
  */
 package se.kilas.markus.qryptostuff.merklesignature;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import org.bouncycastle.util.encoders.Hex;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
 
@@ -28,12 +31,14 @@ public class MerkleSig {
     private final OTSPublicKey publicKey; // TODO: Not according to spec but reciever needs to get it from somewhere(?)
     private final int index; // TODO: maybe there is an alternative solution to this
     private final byte[][] auth;
+    private final String hashAlgorithm;
 
-    public MerkleSig(byte[][] sigPrim, OTSPublicKey publicKey, int index, byte[][] auth) {
+    public MerkleSig(byte[][] sigPrim, OTSPublicKey publicKey, int index, byte[][] auth, String hashAlgorithm) {
         this.sigPrim = sigPrim;
         this.publicKey = publicKey;
         this.index = index;
         this.auth = auth;
+        this.hashAlgorithm = hashAlgorithm;
     }
 
     public byte[][] getSigPrim() {
@@ -52,12 +57,17 @@ public class MerkleSig {
         return index;
     }
 
+    public String getHashAlgorithm() {
+        return hashAlgorithm;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("MerkleSig{");
         sb.append("sigPrim=").append(toHexArray(sigPrim)).append(", ");
         sb.append("index=").append(index).append(", ");
+        sb.append("hashAlgorithm=").append(hashAlgorithm).append(", ");
         int i = 0;
         for (byte[] authi : auth) {
             sb.append("auth_").append(i++).append("=").append(Hex.toHexString(authi)).append(", ");
@@ -72,5 +82,44 @@ public class MerkleSig {
             sb.append(Hex.toHexString(bytes)).append("\n");
         }
         return sb.toString();
+    }
+
+    public boolean verify(byte[] message1, byte[] masterPublicKey) throws NoSuchAlgorithmException {
+        
+        boolean ok = publicKey.verify(message1, sigPrim);
+        System.out.println("sigPrim ok: " + ok);
+        if (!ok) {
+            System.out.println("Signature verification failed!");
+            return false;
+        } else {
+            MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
+            
+            Hash A0 = new Hash(publicKey.hashKey(), "A0");
+            System.out.println("A[0] = " + A0);
+
+            int i = index;
+
+            Hash Ai = A0;
+            for (int j = 0; j < auth.length; j++) {
+                if (i % 2 == 0) {
+                    Ai = Hash.concat(Ai, new Hash(auth[j], "auth" + j), md);
+                    i = i / 2;
+                } else {
+                    Ai = Hash.concat(new Hash(auth[j], "auth" + j), Ai, md);
+                    i = (i - 1) / 2;
+                }
+                System.out.println("A[" + (j + 1) + "] = " + Ai);
+            }
+            System.out.println("Ai=" + Ai + " = " + Hex.toHexString(Ai.getValue()));
+            System.out.println("Public key =                    " + Hex.toHexString(masterPublicKey));
+            boolean keyMatches = Arrays.equals(masterPublicKey, Ai.getValue());
+            System.out.println("Matches: " + keyMatches);
+            if (!keyMatches) {
+                System.out.println("Signature verification failed!");
+                return false;
+            }
+            return true;
+        }
+
     }
 }

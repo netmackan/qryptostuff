@@ -67,39 +67,13 @@ public class Main {
         System.out.println();
         
         System.out.println("*** Signature verification ***");
-        {
-            OTSPublicKey Xi = sig.getPublicKey();
-            boolean ok = Xi.verify(message1, sig.getSigPrim());
-            System.out.println("sigPrim ok: " + ok);
-            if (!ok) {
-                System.out.println("Signature verification failed!");
-            } else {
-                Hash A0 = new Hash(Xi.hashKey(), "A0");
-                System.out.println("A[0] = " + A0);
-                
-                int i = sig.getIndex();
-                
-                Hash Ai = A0;
-                for (int j = 0; j < sig.getAuth().length; j++) {
-                    if (i % 2 == 0) {
-                        Ai = Hash.concat(Ai, new Hash(sig.getAuth()[j], "auth" + j), md);
-                        i = i / 2;
-                    } else {
-                        Ai = Hash.concat(new Hash(sig.getAuth()[j], "auth" + j), Ai, md);
-                        i = (i - 1) / 2;
-                    }
-                    System.out.println("A[" + (j + 1) + "] = " + Ai);
-                }
-                System.out.println("Ai=" + Ai + " = " + Hex.toHexString(Ai.getValue()));
-                System.out.println("Public key =                    " + Hex.toHexString(publicKey));
-                boolean keyMatches = Arrays.equals(publicKey, Ai.getValue());
-                System.out.println("Matches: " + keyMatches);
-                if (!keyMatches) {
-                    System.out.println("Signature verification failed!");
-                }
-            }
-        }
+        boolean ok = sig.verify(message1, publicKey);
+        System.out.println("Merkle signature ok: " + ok);
         
+        final byte[] message2 = "Lillan gick ur vägen".getBytes("UTF-8");
+        System.out.println("Message2: " + new String(message1, "UTF-8"));
+        ok = sig.verify(message2, publicKey);
+        System.out.println("message1==message2: " + ok);
         
     }
         

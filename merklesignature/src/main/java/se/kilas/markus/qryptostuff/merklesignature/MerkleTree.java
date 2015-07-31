@@ -40,6 +40,7 @@ public class MerkleTree {
     private final Node top;
     private int keyIndex = 1; // Note: state
     private final int numLevels;
+    private final MessageDigest md;
 
     public static MerkleTree generate(final int N, final OTSKeyPairGenerator keyGen, final MessageDigest md) {
         
@@ -76,16 +77,17 @@ public class MerkleTree {
             nodes.add(nextLevel);
             prevLevel = nextLevel;
         }
-        return new MerkleTree(N, X, Y, nodes, nodes.get(nodes.size() - 1).get(0));
+        return new MerkleTree(N, X, Y, nodes, nodes.get(nodes.size() - 1).get(0), md);
     }
 
-    private MerkleTree(int num, OTSPrivateKey[] X, OTSPublicKey[] Y, ArrayList<ArrayList<Node>> nodes, Node top) {
+    private MerkleTree(int num, OTSPrivateKey[] X, OTSPublicKey[] Y, ArrayList<ArrayList<Node>> nodes, Node top, MessageDigest md) {
         this.num = num;
         this.X = X;
         this.Y = Y;
         this.nodes = nodes;
         this.top = top;
         this.numLevels = nodes.size();
+        this.md = md;
     }
 
     public Node getTop() {
@@ -185,7 +187,7 @@ public class MerkleTree {
             authsBytes[j] = auth[j].getValue().getValue();
         }
         
-        return new MerkleSig(sigPrim, publicKey, keyIndex, authsBytes);
+        return new MerkleSig(sigPrim, publicKey, keyIndex, authsBytes, md.getAlgorithm());
     }
     
 }
