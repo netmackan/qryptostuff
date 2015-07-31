@@ -17,12 +17,10 @@
 package se.kilas.markus.qryptostuff.merklesignature;
 
 import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.Random;
 import org.bouncycastle.util.encoders.Hex;
-import se.kilas.markus.qryptostuff.lamportsignature.LamportKeyPairGenerator;
+import se.kilas.markus.qryptostuff.onetimesignature.lamport.LamportKeyPairGenerator;
 import se.kilas.markus.qryptostuff.onetimesignature.OTSKeyPairGenerator;
-import se.kilas.markus.qryptostuff.onetimesignature.OTSPublicKey;
 
 /**
  *
