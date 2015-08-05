@@ -35,6 +35,9 @@ public class WinternitzKeyPairGenerator implements OTSKeyPairGenerator {
         this.md = md;
         this.random = random;
         this.paramW = paramW;
+        if (paramW < 2) {
+            throw new IllegalArgumentException("w must be >= 2");
+        }
     }
 
     @Override
