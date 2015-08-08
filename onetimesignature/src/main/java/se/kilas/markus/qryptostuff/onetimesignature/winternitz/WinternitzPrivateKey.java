@@ -70,45 +70,68 @@ public class WinternitzPrivateKey extends WinternitzKey implements OTSPrivateKey
         return signHash(hash(message)); // assuming as message should be divided in s/w blocks of length w
     }
     
-    public byte[][] signHash(final byte[] M) {
+    public byte[][] signHash(final byte[] d) {
         if (v == null) {
             throw new IllegalStateException("Key not available for signing");
         }
         final int t = v.length;
-        final int s = getMessageDigest().getDigestLength();
+        final int s = getMessageDigest().getDigestLength() * 8;
         
-        final int numBlocks = s / paramW;
-        System.out.println("blocks = s / w = " + s + " / " + paramW + " = " + numBlocks);
-        System.out.println("M = " + Hex.toHexString(M));
-        final byte[][] blocks = new byte[numBlocks][paramW];
-        final BigInteger[] bInteger = new BigInteger[numBlocks];
+        final int t1 = s / paramW;
+        System.out.println("t1 = s / w = " + s + " / " + paramW + " = " + t1);
+        
+        final int t2 = (log2(s / paramW) + 1 + paramW) / paramW;
+        System.out.println("t2 = (log2(s/w) + 1 + w)/w = " + t2);
+        
+        System.out.println("d = " + Hex.toHexString(d));
+        final byte[][] blocks = new byte[t1][];
+        
+        System.out.println("d.len=" + d.length + ", paddedD.len=" + t1 * paramW / 8);
+        final byte[] paddedD = new byte[t1 * paramW / 8];
+        System.arraycopy(d, 0, paddedD, paddedD.length - d.length, d.length);
+        System.out.println("Dp= " + Hex.toHexString(paddedD));
+        
+        final BigInteger[] bInteger = new BigInteger[t1];
         for (int i = 0; i < blocks.length; i++) {
-            blocks[i] = new byte[paramW];
-            System.arraycopy(M, i * paramW, blocks[i], 0, paramW);
+            blocks[i] = new byte[paramW / 8];
+            System.arraycopy(paddedD, i * paramW / 8, blocks[i], 0, paramW / 8);
             bInteger[i] = BigIntegers.fromUnsignedByteArray(blocks[i]);
             System.out.println("b" + i + " = " + Hex.toHexString(blocks[i]) + " = " + bInteger[i]);
         }
         
         BigInteger c = new BigInteger("0");
         for (int i = 1; i < s / paramW; i++) {
-            c.add(new BigInteger("2").pow(1 << paramW).subtract(bInteger[i]));
+            BigInteger twopowwbi = new BigInteger("2").pow(paramW).subtract(bInteger[i]);
+            System.out.println("2^w - bi = 2^" + paramW + " - " + bInteger[i] + " = " + twopowwbi);
+            c = c.add(twopowwbi);
         }
-        System.out.println("C = " + c);
         
-        final int numCBlocks = (log2(s / paramW) + 1 + paramW) / paramW;
-        System.out.println("cblocks = (log2(s/w) + 1 + w)/w = " + numCBlocks);
-        final byte[][] cblocks = new byte[numCBlocks][paramW];
-        final BigInteger[] cbInteger = new BigInteger[numCBlocks];
+        
+        
+        byte[] C = BigIntegers.asUnsignedByteArray(c);
+        int clt = t1 * 1 << paramW;//log2(t1) + paramW + 1;
+        System.out.println("clt = " + clt);
+        byte[] paddedC = new byte[BigIntegers.asUnsignedByteArray(new BigInteger(String.valueOf(clt))).length];
+        System.out.println("C.len=" + C.length + ", paddedC.len=" + paddedC.length);
+        System.out.println("C = " + c);
+        System.out.println("c < log2(t1) + w + 1 <=>  c < " + clt);
+        System.out.println("C = 0x" + Hex.toHexString(C));
+        System.out.println("Cp= 0x" + Hex.toHexString(paddedC));
+        System.arraycopy(C, 0, paddedC, paddedC.length - C.length, C.length);
+        System.out.println("Cp= 0x" + Hex.toHexString(paddedC));
+        
+        final byte[][] cblocks = new byte[t2][];
+        final BigInteger[] cbInteger = new BigInteger[t2];
         for (int i = 0; i < cblocks.length; i++) {
-            cblocks[i] = new byte[paramW];
-            System.arraycopy(M, i * paramW, cblocks[i], 0, paramW);
+            cblocks[i] = new byte[paramW / 8];
+            System.arraycopy(paddedC, i * paramW, cblocks[i], 0, paramW / 8);
             cbInteger[i] = BigIntegers.fromUnsignedByteArray(cblocks[i]);
             System.out.println("cb" + i + " = " + Hex.toHexString(cblocks[i]) + " = " + cbInteger[i]);
         }
         
-        final byte[][] sig = new byte[numCBlocks][];
+        final byte[][] sig = new byte[t2][];
         
-        for (int i = 0; i < numCBlocks; i++) {
+        for (int i = 0; i < t2; i++) {
             sig[i] = hash(v[i]);
             for (int j = 1; j < cbInteger[i].intValue(); j++) {
                 sig[i] = hash(v[i]);

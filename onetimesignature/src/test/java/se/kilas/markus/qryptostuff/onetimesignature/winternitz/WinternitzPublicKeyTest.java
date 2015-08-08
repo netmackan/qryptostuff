@@ -82,7 +82,7 @@ public class WinternitzPublicKeyTest {
 
         // Key generation
         start = System.currentTimeMillis();
-        OTSKeyPair pair = new WinternitzKeyPairGenerator(MessageDigest.getInstance(digestAlgorithm), new SecureRandom(), 2).generate();
+        OTSKeyPair pair = new WinternitzKeyPairGenerator(MessageDigest.getInstance(digestAlgorithm), new SecureRandom(), 8).generate();
         WinternitzPrivateKey priv = (WinternitzPrivateKey) pair.getPrivateKey();
         System.out.println(priv);
         WinternitzPublicKey pub = (WinternitzPublicKey) pair.getPublicKey();
