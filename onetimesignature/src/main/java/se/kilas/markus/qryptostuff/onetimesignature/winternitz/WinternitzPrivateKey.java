@@ -122,7 +122,7 @@ public class WinternitzPrivateKey extends WinternitzKey implements OTSPrivateKey
         int binClt1 = log2(t1 * 1 << paramW) + 1;
         int binClt2 = log2(t1) + paramW + 1;
         System.out.println("log2(t1 * 2^w) + 1 = log2(t1) + w + 1");
-        System.out.println("log2(" + t1 + " * 2^" + paramW + ") + 1 = log2(" + t1 + ") + " + paramW + " 1");
+        System.out.println("log2(" + t1 + " * 2^" + paramW + ") + 1 = log2(" + t1 + ") + " + paramW + " + 1");
         System.out.println(binClt1 + " = " + binClt2);
         System.out.println("(12)");
         System.out.println();
