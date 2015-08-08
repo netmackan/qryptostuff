@@ -74,22 +74,30 @@ public class WinternitzPrivateKey extends WinternitzKey implements OTSPrivateKey
         if (v == null) {
             throw new IllegalStateException("Key not available for signing");
         }
-        final int t = v.length;
         final int s = getMessageDigest().getDigestLength() * 8;
         
         final int t1 = s / paramW;
         System.out.println("t1 = s / w = " + s + " / " + paramW + " = " + t1);
         
-        final int t2 = (log2(s / paramW) + 1 + paramW) / paramW;
-        System.out.println("t2 = (log2(s/w) + 1 + w)/w = " + t2);
+        final int t2 = (int) Math.ceil((double)(log2(s / paramW) + 1 + paramW) / paramW);
+        System.out.println("t2 = (log2(s/w) + 1 + w)/w = (log2(" + s + "/" + paramW + ") + 1 + w)/w = " + t2);
+        
+        final int t = t1 + t2;
+        System.out.println("t = t1 + t2 = " + t1 + " + " + t2 + " = " + t);
+        System.out.println("(6)");
+        System.out.println();
         
         System.out.println("d = " + Hex.toHexString(d));
+        
         final byte[][] blocks = new byte[t1][];
         
+        // Digest of message, prepended with zeros to be divisable by paramW
         System.out.println("d.len=" + d.length + ", paddedD.len=" + t1 * paramW / 8);
         final byte[] paddedD = new byte[t1 * paramW / 8];
         System.arraycopy(d, 0, paddedD, paddedD.length - d.length, d.length);
         System.out.println("Dp= " + Hex.toHexString(paddedD));
+        System.out.println("(10)");
+        System.out.println();
         
         final BigInteger[] bInteger = new BigInteger[t1];
         for (int i = 0; i < blocks.length; i++) {
@@ -105,16 +113,25 @@ public class WinternitzPrivateKey extends WinternitzKey implements OTSPrivateKey
             System.out.println("2^w - bi = 2^" + paramW + " - " + bInteger[i] + " = " + twopowwbi);
             c = c.add(twopowwbi);
         }
+        System.out.println("C = " + c);
+        System.out.println("(11)");
+        System.out.println();
         
-        
+        int clt = t1 * 1 << paramW;
+        System.out.println("c <= t1*2^w <= " + t1 + "*2^" + paramW + " <= " + clt);
+        int binClt1 = log2(t1 * 1 << paramW) + 1;
+        int binClt2 = log2(t1) + paramW + 1;
+        System.out.println("log2(t1 * 2^w) + 1 = log2(t1) + w + 1");
+        System.out.println("log2(" + t1 + " * 2^" + paramW + ") + 1 = log2(" + t1 + ") + " + paramW + " 1");
+        System.out.println(binClt1 + " = " + binClt2);
+        System.out.println("(12)");
+        System.out.println();
         
         byte[] C = BigIntegers.asUnsignedByteArray(c);
-        int clt = t1 * 1 << paramW;//log2(t1) + paramW + 1;
+        
         System.out.println("clt = " + clt);
         byte[] paddedC = new byte[BigIntegers.asUnsignedByteArray(new BigInteger(String.valueOf(clt))).length];
-        System.out.println("C.len=" + C.length + ", paddedC.len=" + paddedC.length);
-        System.out.println("C = " + c);
-        System.out.println("c < log2(t1) + w + 1 <=>  c < " + clt);
+        System.out.println("C.len=" + (C.length * 8) + ", paddedC.len=" + (paddedC.length * 8));
         System.out.println("C = 0x" + Hex.toHexString(C));
         System.out.println("Cp= 0x" + Hex.toHexString(paddedC));
         System.arraycopy(C, 0, paddedC, paddedC.length - C.length, C.length);
@@ -124,7 +141,7 @@ public class WinternitzPrivateKey extends WinternitzKey implements OTSPrivateKey
         final BigInteger[] cbInteger = new BigInteger[t2];
         for (int i = 0; i < cblocks.length; i++) {
             cblocks[i] = new byte[paramW / 8];
-            System.arraycopy(paddedC, i * paramW, cblocks[i], 0, paramW / 8);
+            System.arraycopy(paddedC, i * paramW / 8, cblocks[i], 0, paramW / 8);
             cbInteger[i] = BigIntegers.fromUnsignedByteArray(cblocks[i]);
             System.out.println("cb" + i + " = " + Hex.toHexString(cblocks[i]) + " = " + cbInteger[i]);
         }
@@ -137,6 +154,9 @@ public class WinternitzPrivateKey extends WinternitzKey implements OTSPrivateKey
                 sig[i] = hash(v[i]);
             }
         }
+        System.out.println("sigma = ( " + bytesToString(sig) + ")");
+        System.out.println("(13)");
+        System.out.println();
         
         clear();
         
@@ -153,6 +173,14 @@ public class WinternitzPrivateKey extends WinternitzKey implements OTSPrivateKey
     @Override
     public String toString() {
         return "PrivateKey" + "(" + getDigestAlgorithm() + ")";
+    }
+
+    private String bytesToString(byte[][] sig) {
+        final StringBuilder sb = new StringBuilder();
+        for (byte[] bs : sig) {
+            sb.append(Hex.toHexString(bs)).append(" ");
+        }
+        return sb.toString();
     }
 
 }
